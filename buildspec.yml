@@ -6,14 +6,12 @@ phases:
       nodejs: 18
   pre_build:
     commands:
-      # 正しいアカウントID (381183037611) を使用してECRにログイン
       - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin ://amazonaws.com
   build:
     commands:
       - echo Build started on `date`
       - npm install --legacy-peer-deps
       - echo npm install completed on `date`
-      # 旧バージョンAngularのOpenSSLエラーを回避する環境変数を追加してビルド
       - export NODE_OPTIONS=--openssl-legacy-provider && ./node_modules/.bin/ng build
       - echo build completed on `date`
       # 日付をイメージタグとして取得
