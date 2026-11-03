@@ -3,23 +3,22 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 18 
+      nodejs: 18
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
   build:
     commands:
       - echo Build started on `date`
-      - npm install --legacy-peer-deps 
+      - npm install --legacy-peer-deps
       - echo npm install completed on `date`
       - npm run build
       - echo npm run build completed on `date`
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -l ./dist/shop/
-
+      - ls -l ./dist/  
 artifacts:
   files:
-    - ./dist/shop/**/* 
+    - ./dist/**/*  
     - appspec.yml
