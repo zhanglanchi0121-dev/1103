@@ -6,7 +6,8 @@ phases:
       nodejs: 16
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      # 登录ECR
+      - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin ://amazonaws.com
   build:
     commands:
       - echo Build started on `date`
@@ -14,13 +15,24 @@ phases:
       - echo npm install completed on `date`
       - npm run build
       - echo npm run build completed on `date`
+      # date命令获取一下日期作为镜像标签
+      - TAG=`date +"%Y%m%d%H%M%S"`
+      # build镜像(该镜像名直接指设置成ECR绑定的名字)
+      - docker build -t ://amazonaws.com/dp-ecr-httpd:$TAG ./
+      - echo docker build completed on `date`
+      # 推送镜像
+      - docker push ://amazonaws.com/dp-ecr-httpd:$TAG
+      - echo docker push completed on `date`
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -l ./dist/shop/
-
+      # 创建一个在源码根目录中的名为imagedefinitions.json的文件
+      # 包含ECS Service的容器名，以及更新后使用的Image URI
+      # CodePipeline的部署阶段将使用此信息来创建ECS Service引用的task定义的新version，然后它会使用新的task定义更新ECS Service
+      # name指定要更新的container的名字；imageUrl指定更新后的镜像Uri
+      # %s会被替换成后面的「 ://amazonaws.com/dp-ecr-httpd:$TAG 」部分。
+      - printf '[{"name":"mynginx","imageUrl":"%s"}]' ://amazonaws.com/dp-ecr-httpd:$TAG > imagedefinitions.json
+      - cat imagedefinitions.json
 artifacts:
   files:
-    - ./dist/shop/*
-    - ./dist/shop/assets/*
-    - appspec.yml
+    - imagedefinitions.json
