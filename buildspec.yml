@@ -6,19 +6,21 @@ phases:
       nodejs: 18
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      - echo Installing Angular CLI globally...
+      - npm install -g @angular/cli@12.2.0    # 👈 核心修改：在全局强行安装 ng 命令
   build:
     commands:
       - echo Build started on `date`
       - npm install --legacy-peer-deps
       - echo npm install completed on `date`
-      - npm run build
-      - echo npm run build completed on `date`
+      - ./node_modules/.bin/ng build          # 👈 核心修改：用绝对路径强行调用 ng 打包，彻底防止 127 找不到命令
+      - echo build completed on `date`
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -l ./dist/  
+      - ls -l ./dist/shop/ || ls -l ./dist/   # 👈 兼容性保障：哪个目录存在就列出哪个
+
 artifacts:
   files:
-    - ./dist/**/*  
+    - ./dist/**/*                             # 👈 抓取打包出来的所有产物
     - appspec.yml
