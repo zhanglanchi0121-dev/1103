@@ -7,7 +7,7 @@ phases:
   pre_build:
     commands:
       # 登录到真实的 ECR 存储库
-      - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com://amazonaws.com
+      - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
@@ -19,16 +19,16 @@ phases:
       # 获取时间戳作为 Docker 镜像的唯一标签 (TAG)
       - TAG=`date +"%Y%m%d%H%M%S"`
       # 构建 Docker 镜像并打上真实的 ECR 标签
-      - docker build -t 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com://amazonaws.com/dp-ecr-httpd:$TAG ./
+      - docker build -t 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:$TAG ./
       - echo docker build completed on `date`
       # 将构建好的镜像推送到私有存储库
-      - docker push ://amazonaws.com/dp-ecr-httpd:$TAG
+      - docker push 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:$TAG
       - echo docker push completed on `date`
   post_build:
     commands:
       - echo Build completed on `date`
       # 生成供 ECS 自动更新使用的部署描述文件 imagedefinitions.json
-      - printf '[{"name":"mynginx","imageUrl":"%s"}]' ://amazonaws.com/dp-ecr-httpd:$TAG > imagedefinitions.json
+      - printf '[{"name":"mynginx","imageUrl":"%s"}]' 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:$TAG > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
   files: 
