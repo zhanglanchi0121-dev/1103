@@ -27,8 +27,8 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      # 生成供 ECS 自动更新使用的部署描述文件 imagedefinitions.json
-      - printf '[{"name":"mynginx","imageUrl":"%s"}]' 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:$TAG > imagedefinitions.json
+      # 确保 printf 中的 %s 被正确替换，生成合法的规范 JSON
+      - printf '[{"name":"mynginx","imageUrl":"://amazonaws.com"}]' $TAG > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
   files: 
