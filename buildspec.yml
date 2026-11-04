@@ -26,10 +26,10 @@ phases:
       - echo docker push completed on `date`
   post_build:
     commands:
-      - echo Build completed on `date`
-      # 确保 printf 中的 %s 被正确替换，生成合法的规范 JSON
-      - printf '[{"name":"mynginx","imageUrl":"://amazonaws.com"}]' $TAG > imagedefinitions.json
-      - cat imagedefinitions.json
+        - echo Build completed on `date`
+        # 彻底修复 printf 语法，将 %s 放在标签位置，并填写正确的完整 ECR 路径
+        - printf '[{"name":"mynginx","imageUrl":"381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:%s"}]' $TAG > imagedefinitions.json
+        - cat imagedefinitions.json
 artifacts:
   files: 
     - imagedefinitions.json
