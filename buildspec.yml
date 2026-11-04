@@ -28,7 +28,7 @@ phases:
     commands:
         - echo Build completed on `date`
         # 彻底修复 printf 语法，将 %s 放在标签位置，并填写正确的完整 ECR 路径
-        - printf '[{"name":"mynginx","imageUrl":"381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:%s"}]'> imagedefinitions.json
+        - printf '[{"name":"mynginx","imageUrl":"%s"}]' 381183037611.dkr.ecr.ap-northeast-1.amazonaws.com/dp-ecr-httpd:$TAG > imagedefinitions.json
         - cat imagedefinitions.json
 artifacts:
   files: 
